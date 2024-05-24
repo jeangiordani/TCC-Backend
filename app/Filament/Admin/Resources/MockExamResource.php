@@ -14,6 +14,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class MockExamResource extends Resource
@@ -22,7 +23,7 @@ class MockExamResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $modelLabel = 'Simulados';
+    protected static ?string $modelLabel = 'Simulado';
 
     public static function form(Form $form): Form
     {
@@ -40,7 +41,12 @@ class MockExamResource extends Resource
                     ->label('Quantidade')
                     ->placeholder('Quantidade de questões')
                     ->integer(),
-                Forms\Components\Select::make('user_id')->relationship('user', 'name'),
+                Forms\Components\Select::make('user_id')
+                    ->relationship('user', 'name')
+                    ->label('Usuário'),
+                Forms\Components\Select::make('knowledge_area_id')
+                    ->relationship('knowledge_area', 'name')
+                    ->label('Área de conhecimento'),
 
             ]);
     }
@@ -49,7 +55,17 @@ class MockExamResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('title')
+                    ->label('Título'),
+                Tables\Columns\TextColumn::make('description')
+                    ->label('Descrição'),
+                Tables\Columns\TextColumn::make('qty_questions')
+                    ->label('Quantidade'),
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('Usuário'),
+                Tables\Columns\TextColumn::make('knowledge_area.name')
+                    ->label('Área de Conhecimento')
+                    ->searchable()
             ])
             ->filters([
                 //
@@ -68,6 +84,7 @@ class MockExamResource extends Resource
     {
         return [
             RelationManagers\UsersRelationManager::class,
+            RelationManagers\KnowledgeAreasRelationManager::class,
         ];
     }
 

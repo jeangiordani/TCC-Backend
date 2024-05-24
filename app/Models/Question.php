@@ -6,28 +6,15 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class MockExam extends Model
+class Question extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $table = 'mock_exams';
-
-    protected $fillable = [
-        'title',
-        'description',
-        'qty_questions',
-        'kowledge_area_id',
-        'user_id',
-    ];
+    protected $fillable = ['statement', 'is_active', 'knowledge_area_id'];
 
     protected $casts = [
         'id' => 'uuid',
     ];
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 
     public function knowledge_area()
     {

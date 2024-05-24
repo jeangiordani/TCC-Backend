@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Providers\Filament\AdminPanelProvider;
+use BezhanSalleh\FilamentLanguageSwitch\LanguageSwitch;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,5 +24,10 @@ class AppServiceProvider extends ServiceProvider
     {
         //filament
         $this->app->register(AdminPanelProvider::class);
+        LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
+            $switch
+                ->locales(['en', 'pt_BR'])
+                ->visible(outsidePanels: true);
+        });
     }
 }

@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('statement')->nullable('false')->unique();
+            $table->longText('statement')->nullable(false);
+            $table->text('post_statement')->nullable(true);
             $table->boolean('is_active')->default(true);
 
             $table->foreignId('knowledge_area_id')

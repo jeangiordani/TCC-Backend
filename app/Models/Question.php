@@ -10,14 +10,19 @@ class Question extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $fillable = ['statement', 'is_active', 'knowledge_area_id'];
+    protected $fillable = ['statement', 'post_statement', 'is_active', 'knowledge_area_id'];
 
     protected $casts = [
-        'id' => 'uuid',
+        'id' => 'string'
     ];
 
     public function knowledge_area()
     {
         return $this->belongsTo(KnowledgeArea::class);
+    }
+
+    public function alternatives()
+    {
+        return $this->hasMany(Alternative::class, 'question_id', 'id');
     }
 }

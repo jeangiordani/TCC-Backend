@@ -84,7 +84,7 @@ class MockExamResource extends Resource
     {
         return [
             RelationManagers\UsersRelationManager::class,
-            RelationManagers\KnowledgeAreasRelationManager::class,
+            // RelationManagers\KnowledgeAreasRelationManager::class,
         ];
     }
 

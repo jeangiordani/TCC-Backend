@@ -21,7 +21,7 @@ class MockExam extends Model
     ];
 
     protected $casts = [
-        'id' => 'uuid',
+        'id' => 'string'
     ];
 
     public function user()

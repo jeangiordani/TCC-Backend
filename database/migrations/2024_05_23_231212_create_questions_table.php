@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->longText('statement')->nullable(false);
+            $table->longText('statement')->nullable(true);
             $table->text('post_statement')->nullable(true);
             $table->boolean('is_active')->default(true);
 

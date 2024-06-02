@@ -25,4 +25,9 @@ class Question extends Model
     {
         return $this->hasMany(Alternative::class, 'question_id', 'id');
     }
+
+    public function image()
+    {
+        return $this->hasOne(QuestionImage::class, 'question_id', 'id');
+    }
 }

@@ -16,7 +16,7 @@ class MockExam extends Model
         'title',
         'description',
         'qty_questions',
-        'kowledge_area_id',
+        'knowledge_area_id',
         'user_id',
     ];
 
@@ -32,5 +32,10 @@ class MockExam extends Model
     public function knowledge_area()
     {
         return $this->belongsTo(KnowledgeArea::class);
+    }
+
+    public function answers()
+    {
+        return $this->hasMany(MockExamAnswer::class, 'mock_exam_id', 'id');
     }
 }

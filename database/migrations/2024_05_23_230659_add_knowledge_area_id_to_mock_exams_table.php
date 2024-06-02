@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::table('mock_exams', function (Blueprint $table) {
             $table->foreignId('knowledge_area_id')
-                ->constrained(table: 'knowledge_areas')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+                ->nullable(true)
+                ->constrained(table: 'knowledge_areas');
         });
     }
 

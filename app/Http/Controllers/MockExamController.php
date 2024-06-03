@@ -17,7 +17,7 @@ class MockExamController extends Controller
     {
         $request->validate([
             'title' => 'required|max:45',
-            'description' => 'required',
+            'description' => 'max:255',
             'qty_questions' => 'required|integer',
             'user_id' => 'exists:users,id|required|integer',
             'knowledge_area_id' => 'integer'
@@ -40,7 +40,13 @@ class MockExamController extends Controller
             ], 400);
         }
 
-        $knowledgeAreas = KnowledgeArea::where('is_active', true)->get();
+        if(!$request->knowledge_area_id){
+            
+            $knowledgeAreas = KnowledgeArea::where('is_active', true)->get();
+        }else{
+            $knowledgeAreas = KnowledgeArea::where('id', $request->knowledge_area_id)->get();
+        }
+
 
         $numKnowledgeAreas = $knowledgeAreas->count();
         $questionsPerArea = intdiv($qtyQuestions, $numKnowledgeAreas);
@@ -57,11 +63,11 @@ class MockExamController extends Controller
                 ->take($numQuestions)
                 ->get();
 
-            if ($questions->count() < $numQuestions) {
-                return response()->json([
-                    'error' => 'Não a questões suficiente: ' . $knowledgeArea->name,
-                ], 400);
-            }
+            // if ($questions->count() < $numQuestions) {
+            //     return response()->json([
+            //         'error' => 'Não a questões suficiente: ' . $knowledgeArea->name,
+            //     ], 400);
+            // }
 
             $selectedQuestions = $selectedQuestions->merge($questions);
         }
@@ -134,6 +140,7 @@ class MockExamController extends Controller
                     'post_statement' => $question->post_statement,
                     'is_active' => $question->is_active,
                     'knowledge_area_id' => $question->knowledge_area_id,
+                    'knowledge_area' => $question->knowledge_area->name,
                     'alternatives' => $question->alternatives->map(function ($alternative) {
                         return [
                             'id' => $alternative->id,
@@ -148,6 +155,16 @@ class MockExamController extends Controller
                         'is_correct' => $answer->is_correct,
                         'alternative_id' => $answer->alternative_id,
                     ],
+                    'comments' => $question->comments->map(function ($comment) {
+                        return [
+                            'id' => $comment->id,
+                            'text' => $comment->text,
+                            'user_id' => $comment->user_id,
+                            'question_id' => $comment->question_id,
+                            'created_at' => $comment->created_at,
+                            'updated_at' => $comment->updated_at,
+                        ];
+                    }),
                 ];
             }),
         ];

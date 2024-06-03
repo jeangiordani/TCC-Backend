@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('mock_exams', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('title')->nullable(false);
-            $table->string('description')->nullable(false);
+            $table->string('description')->nullable(true);
             $table->integer('qty_questions');
             $table->timestamps();
 

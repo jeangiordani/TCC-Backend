@@ -47,6 +47,7 @@ class KnowledgeAreaResource extends Resource
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('is_active')
+                    ->formatStateUsing(fn ($record) => $record->is_active == true ? 'Sim' : 'Não')
                     ->label('Ativo')
                     ->sortable(),
             ])

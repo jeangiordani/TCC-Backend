@@ -30,4 +30,9 @@ class Question extends Model
     {
         return $this->hasOne(QuestionImage::class, 'question_id', 'id');
     }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'question_id', 'id');
+    }
 }

@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\KnowledgeAreaController;
 use App\Http\Controllers\MockExamController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -32,4 +34,17 @@ Route::controller(KnowledgeAreaController::class)->group(function () {
     // Route::post('knowledge-areas', 'store');
     // Route::put('knowledge-areas/{id}', 'update');
     // Route::delete('knowledge-areas/{id}', 'destroy');
+});
+
+Route::controller(CommentController::class)->group(function () {
+    Route::get('comments/{questionId}', 'index')->middleware('auth:api');
+    // Route::get('comments/{id}', 'show')->middleware('auth:api');
+    Route::post('comments', 'store')->middleware('auth:api');
+    // Route::put('comments/{id}', 'update');
+    // Route::delete('comments/{id}', 'destroy');
+});
+
+Route::controller(UserController::class)->group(function () {
+    Route::get('users/stats', 'stats')->middleware('auth:api');
+
 });

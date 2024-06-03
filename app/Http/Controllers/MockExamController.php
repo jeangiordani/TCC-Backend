@@ -109,6 +109,21 @@ class MockExamController extends Controller
         ]);
     }
 
+    public function mockExamById($id)
+    {   
+        $mockExam = MockExam::where('id', $id)->withCount([
+            'answers',
+            'answers as qty_answered' => function ($query) {
+                $query->whereNotNull('alternative_id');
+            }
+        ])->first();
+        
+
+        return response()->json([
+            'data' => $mockExam,
+        ]);
+    }
+
     public function show($id)
     {
         $mockExam = MockExam::with([

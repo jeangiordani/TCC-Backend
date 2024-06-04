@@ -115,7 +115,13 @@ class MockExamController extends Controller
             'answers',
             'answers as qty_answered' => function ($query) {
                 $query->whereNotNull('alternative_id');
-            }
+            },
+            'answers as qty_correct' => function ($query) {
+                $query->where('is_correct', true);
+            },
+            'answers as qty_incorrect' => function ($query) {
+                $query->where('is_correct', false)->whereNotNull('alternative_id');
+            },
         ])->first();
         
 
@@ -182,6 +188,10 @@ class MockExamController extends Controller
                     }),
                 ];
             }),
+            'qty_answered' => $mockExam->answers->whereNotNull('alternative_id')->count(),
+            'qty_correct' => $mockExam->answers->where('is_correct', true)->count(),
+            'qty_incorrect' => $mockExam->answers->where('is_correct', false)->count(),
+            'is_completed' => $mockExam->answers->whereNotNull('alternative_id')->count() === $mockExam->qty_questions,
         ];
         return response()->json($data);
     }

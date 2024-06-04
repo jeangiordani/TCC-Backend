@@ -9,25 +9,45 @@ use Mockery\Mock;
 
 class UserController extends Controller
 {
-    public function stats(){
-        $user = auth()->user()->id;
-        $mockExams = DB::table('mock_answers')
-        ->join('mock_exams', 'mock_answers.mock_exam_id', '=', 'mock_exams.id')
-        ->join('questions', 'mock_answers.question_id', '=', 'questions.id')
-        ->join('knowledge_areas', 'questions.knowledge_area_id', '=', 'knowledge_areas.id')
-        ->where('mock_exams.user_id', $user)
-        ->whereNotNull('mock_answers.alternative_id')
-        ->select('knowledge_areas.name', 'mock_answers.is_correct', DB::raw('count(*) as total'))
-        ->groupBy('knowledge_areas.name', 'mock_answers.is_correct')
-        ->orderBy('total', 'desc')
-        ->get();
-
-        $stats = collect($mockExams)->map(function($mockExam){
-            $mockExam->is_correct = $mockExam->is_correct ? 'Correta' : 'Errada';
-            return $mockExam;
-        });
-
-        dd($mockExams);
+    public function stats()
+        {
+            $user = auth()->user()->id;
+    
+            $results = DB::select('
+                SELECT 
+                    ka.name AS knowledge_area,
+                    ma.is_correct,
+                    COUNT(*) AS count
+                FROM mock_answers ma
+                INNER JOIN mock_exams me ON ma.mock_exam_id = me.id
+                INNER JOIN questions q ON ma.question_id = q.id 
+                INNER JOIN knowledge_areas ka ON q.knowledge_area_id = ka.id 
+                WHERE me.user_id = ? AND ma.alternative_id IS NOT NULL
+                GROUP BY ka.name, ma.is_correct
+            ', [$user]);
+    
+            $stats = [];
+    
+            foreach ($results as $row) {
+                $knowledgeArea = $row->knowledge_area;
+                $isCorrect = $row->is_correct;
+                $count = $row->count;
+    
+                if (!isset($stats[$knowledgeArea])) {
+                    $stats[$knowledgeArea] = [
+                        'correct' => 0,
+                        'incorrect' => 0,
+                    ];
+                }
+    
+                if ($isCorrect) {
+                    $stats[$knowledgeArea]['correct'] += $count;
+                } else {
+                    $stats[$knowledgeArea]['incorrect'] += $count;
+                }
+            }
+    
+            return response()->json($stats);
         
     }
 }

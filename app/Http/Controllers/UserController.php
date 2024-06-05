@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\MockExam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Mockery\Mock;
 
 class UserController extends Controller
 {
@@ -24,30 +23,37 @@ class UserController extends Controller
                 INNER JOIN knowledge_areas ka ON q.knowledge_area_id = ka.id 
                 WHERE me.user_id = ? AND ma.alternative_id IS NOT NULL
                 GROUP BY ka.name, ma.is_correct
+                ORDER BY ka.name, ma.is_correct
             ', [$user]);
     
-            $stats = [];
-    
-            foreach ($results as $row) {
-                $knowledgeArea = $row->knowledge_area;
-                $isCorrect = $row->is_correct;
-                $count = $row->count;
-    
-                if (!isset($stats[$knowledgeArea])) {
-                    $stats[$knowledgeArea] = [
+            $formattedResults = [];
+            $data = [];
+
+            foreach ($results as $result) {
+                $knowledge_area = $result->knowledge_area;
+                $is_correct = $result->is_correct;
+                $count = $result->count;
+
+                if (!isset($data[$knowledge_area])) {
+                    $data[$knowledge_area] = [
+                        'subject' => $knowledge_area,
                         'correct' => 0,
                         'incorrect' => 0,
                     ];
                 }
-    
-                if ($isCorrect) {
-                    $stats[$knowledgeArea]['correct'] += $count;
+
+                if ($is_correct) {
+                    $data[$knowledge_area]['correct'] += $count;
                 } else {
-                    $stats[$knowledgeArea]['incorrect'] += $count;
+                    $data[$knowledge_area]['incorrect'] += $count;
                 }
             }
-    
-            return response()->json($stats);
+
+            foreach ($data as $item) {
+                $formattedResults[] = $item;
+            }
+
+            return response()->json($formattedResults);
         
     }
 }

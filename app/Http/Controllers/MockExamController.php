@@ -195,6 +195,82 @@ class MockExamController extends Controller
         ];
         return response()->json($data);
     }
+
+    // faça a mesma coisa que o metodo show, mas procure o simulado pelo id e e pelo question_id
+    // esta retornando null para as questões que não são a questão procurada
+    //arrume isso 
+    public function showByQuestion($id, $questionId)
+{
+    $mockExam = MockExam::with([
+        'answers.question.alternatives',
+        'answers.question.image'
+    ])->find($id);
+
+    if (!$mockExam) {
+        return response()->json([
+            'error' => 'Simulado não encontrado!',
+        ], 404);
+    }
+
+    $questions = $mockExam->answers->map(function ($answer) use ($questionId) {
+        $question = $answer->question;
+        if ($question->id == $questionId) {
+            return [
+                'id' => $question->id,
+                'statement' => $question->statement,
+                'post_statement' => $question->post_statement,
+                'is_active' => $question->is_active,
+                'knowledge_area_id' => $question->knowledge_area_id,
+                'knowledge_area' => $question->knowledge_area->name,
+                'alternatives' => $question->alternatives->map(function ($alternative) {
+                    return [
+                        'id' => $alternative->id,
+                        'letter' => $alternative->letter,
+                        'description' => $alternative->description,
+                        'is_correct' => $alternative->is_correct,
+                    ];
+                }),
+                'image' => $question->image ? $question->image->path : null,
+                'answer' => [
+                    'id' => $answer->id,
+                    'is_correct' => $answer->is_correct,
+                    'alternative_id' => $answer->alternative_id,
+                ],
+                'comments' => $question->comments->map(function ($comment) {
+                    return [
+                        'id' => $comment->id,
+                        'text' => $comment->text,
+                        'user_id' => $comment->user_id,
+                        'question_id' => $comment->question_id,
+                        'created_at' => $comment->created_at,
+                        'updated_at' => $comment->updated_at,
+                    ];
+                }),
+            ];
+        }
+        return null; // Ensure to return null for non-matching questions
+    })->filter(); // Filter out the null values
+
+    $data = [
+        'mock_exam' => [
+            'id' => $mockExam->id,
+            'title' => $mockExam->title,
+            'description' => $mockExam->description,
+            'qty_questions' => $mockExam->qty_questions,
+            'user_id' => $mockExam->user_id,
+            'created_at' => $mockExam->created_at,
+            'updated_at' => $mockExam->updated_at,
+        ],
+        'questions' => $questions->values(), // Reset the keys of the filtered collection
+        'qty_answered' => $mockExam->answers->whereNotNull('alternative_id')->count(),
+        'qty_correct' => $mockExam->answers->where('is_correct', true)->count(),
+        'qty_incorrect' => $mockExam->answers->where('is_correct', false)->count(),
+        'is_completed' => $mockExam->answers->whereNotNull('alternative_id')->count() === $mockExam->qty_questions,
+    ];
+
+    return response()->json($data);
+}
+
     
     public function markAnswer(Request $request, $answerId)
     {

@@ -22,6 +22,7 @@ Route::controller(AuthController::class)->prefix('auth')->group(
 Route::controller(MockExamController::class)->group(function () {
     Route::get('mock-exams', 'index')->middleware('auth:api');
     Route::get('mock-exams/{id}', 'show')->middleware('auth:api');
+    Route::get('mock-exams/{id}/question/{questionId}', 'showByQuestion')->middleware('auth:api');
     Route::get('mock-exams/{id}/answers', 'mockExamById')->middleware('auth:api');
     Route::post('mock-exams', 'store')->middleware('auth:api');
     Route::patch('/mock-exams/answers/{answer}', 'markAnswer')->middleware('auth:api');

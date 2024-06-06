@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class KnowledgeAreasRelationManager extends RelationManager
 {
     protected static string $relationship = 'knowledge_areas';
+    protected static ?string $title = 'Área de conhecimento';
+    protected static ?string $modelLabel = 'Área de conhecimento';
 
     public function form(Form $form): Form
     {
@@ -45,6 +47,7 @@ class KnowledgeAreasRelationManager extends RelationManager
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->heading('Área de conhecimento');
     }
 }

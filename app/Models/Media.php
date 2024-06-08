@@ -14,7 +14,8 @@ class Media extends Model
     protected $fillable = [
         'name',
         'path',
-        'type'
+        'type',
+        'subject'
     ];
 
     public $incrementing = false;

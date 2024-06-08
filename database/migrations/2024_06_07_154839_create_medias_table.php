@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('path')->unique();
             $table->string('type');
+            $table->string('subject')->nullable()->default('Diversos');
             $table->timestamps();
         });
     }

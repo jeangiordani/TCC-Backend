@@ -20,16 +20,20 @@ class MediaResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
+        ->columns(1)
             ->schema([
                 Forms\Components\TextInput::make('name')
+                ->label('Nome')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\FileUpload::make('path')
+                    ->label('Arquivo')
                     ->directory('uploads')
                     ->disk('public')
                     ->unique($table = 'medias', $column = 'path'),
 
                 Forms\Components\Select::make('type')
+                ->label('Tipo')
                 ->options([
                     'image' => 'Imagem',
                     'video' => 'Video',
@@ -37,6 +41,9 @@ class MediaResource extends Resource
                     'PDF' => 'PDF'
                 ])
                 ->required(),
+                Forms\Components\TextInput::make('subject')
+                ->label('Assunto')
+                ->required()
             ]);
     }
 
@@ -44,9 +51,22 @@ class MediaResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name'),
-                TextColumn::make('path')->url(fn (Media $record) => asset('storage/uploads/' . $record->path)),
-                TextColumn::make('type'),
+                TextColumn::make('name')
+                    ->label('Nome')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('path')->url(fn (Media $record) => asset('storage/' . $record->path))
+                    ->label('Arquivo')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('type')
+                    ->label('Tipo')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('subject')
+                    ->label('Assunto')
+                    ->searchable()
+                    ->sortable(),
             ])
             ->filters([
                 //

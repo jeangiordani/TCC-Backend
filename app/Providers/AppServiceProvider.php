@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->register(AdminPanelProvider::class);
         LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
             $switch
-                ->locales(['en', 'pt_BR'])
+                ->locales(['pt_BR'])
                 ->visible(outsidePanels: true);
         });
     }

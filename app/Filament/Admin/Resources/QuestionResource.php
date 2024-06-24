@@ -5,13 +5,12 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Admin\Resources\QuestionResource\Pages;
 use App\Filament\Admin\Resources\QuestionResource\RelationManagers;
 use App\Models\Question;
+use App\Models\QuestionImage;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class QuestionResource extends Resource
 {
@@ -34,49 +33,16 @@ class QuestionResource extends Resource
                     ->required(),
                 Forms\Components\Select::make('is_active')
                     ->label('Ativo')
-                    ->options(
-                        [
-                            0 => 'Não',
-                            1 => 'Sim'
-                        ]
-                    ),
+                    ->options([
+                        0 => 'Não',
+                        1 => 'Sim'
+                    ]),
                 Forms\Components\Select::make('knowledge_area_id')
                     ->relationship('knowledge_area', 'name')
                     ->label('Disciplina'),
-                // Forms\Components\Select::make('id')
-                //     ->relationship('alternatives', 'description')
-                //     ->label('Alternativas')
-                // ->createOptionForm(
-                //     [
-                //         Forms\Components\Select::make('letter')
-                //             ->options(
-                //                 [
-                //                     'a' => 'a',
-                //                     'b' => 'b',
-                //                     'c' => 'c',
-                //                     'd' => 'd',
-                //                     'e' => 'e',
-                //                 ]
-                //             )
-                //             ->label('Letra')
-                //             ->required(),
-                //         Forms\Components\TextInput::make('description')
-                //             ->required()
-                //             ->label('Descrição'),
-                //         Forms\Components\Select::make('is_correct')
-                //             ->options(
-                //                 [
-                //                     0 => 'Não',
-                //                     1 => 'Sim'
-                //                 ]
-                //             )
-                //             ->label('Correta')
-                //             ->required(),
-                //         Forms\Components\Select::make('question_id')
-                //             ->relationship('question', 'id')
-                //             ->label('Questão'),
-                //     ]
-                // )->visible(fn ($livewire) => $livewire->record !== null),
+                Forms\Components\TextInput::make('image_url')
+                    ->label('URL da Imagem')
+		    ->url(),
             ]);
     }
 
@@ -94,7 +60,8 @@ class QuestionResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
+	    ->actions([
+		    Tables\Actions\DeleteAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -121,9 +88,24 @@ class QuestionResource extends Resource
         ];
     }
 
+    public static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($question) {
+            $imageUrl = $question->image_url;
+            if ($imageUrl) {
+                QuestionImage::create([
+                    'question_id' => $question->id,
+                    'path' => $imageUrl,
+                ]);
+            }
+        });
+    }
+
     public static function getPluralLabel(): ?string
     {
         return 'Questões';
-
     }
 }
+

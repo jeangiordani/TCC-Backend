@@ -17,30 +17,34 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user';
 
     protected static ?string $modelLabel = 'Usuário';
-
+    
+    
     public static function form(Form $form): Form
     {
         return $form->columns(1)
             ->schema([
                 Forms\Components\TextInput::make('name')
-                    ->label('Name')
+                    ->label('Nome')
                     ->required()
                     ->placeholder('John Doe'),
-                Forms\Components\TextInput::make('email'),
+	   	Forms\Components\TextInput::make('email')
+		    ->required(),
                 Forms\Components\TextInput::make('password')
                     ->label('Password')
                     ->required()
                     ->password()
-                    ->placeholder('Password'),
+		    ->placeholder('Password')
+	    	    ->visibleOn('create'),
                 Forms\Components\Select::make('role')
                     ->options([
                         'ALUNO' => 'ALUNO',
                         'PROFESSOR' => 'PROFESSOR',
                         'ADMIN' => 'ADMIN',
-                    ]),
+		    ])
+		    ->label('Perfil'),
             ]);
     }
 
@@ -49,28 +53,26 @@ class UserResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable()
+			->label('Nome')
+			->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable()
-                    ->sortable(),
+		    ->sortable()
+	    	    ->label('Email'),
                 Tables\Columns\TextColumn::make('role')
                     ->searchable()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->searchable()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->searchable()
-                    ->sortable()
+		    ->sortable()
+	    	    ->label('Perfil'),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('type')
+                Tables\Filters\SelectFilter::make('role')
                     ->options([
                         'ALUNO' => 'ALUNO',
                         'PROFESSOR' => 'PROFESSOR',
                         'ADMIN' => 'ADMIN',
-                    ]),
+		    ])
+		    ->label('Perfil'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

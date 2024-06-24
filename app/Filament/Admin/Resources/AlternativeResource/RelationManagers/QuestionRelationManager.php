@@ -22,7 +22,8 @@ class QuestionRelationManager extends RelationManager
             ->schema([
                 Forms\Components\TextInput::make('statement')
                     ->required()
-                    ->maxLength(255),
+		    ->maxLength(255)
+    		    ->label('Enunciado'),
             ]);
     }
 
@@ -31,7 +32,8 @@ class QuestionRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('statement')
             ->columns([
-                Tables\Columns\TextColumn::make('statement'),
+		Tables\Columns\TextColumn::make('statement')
+		    ->label('Enunciado'),
             ])
             ->filters([
                 //

@@ -17,8 +17,8 @@ class KnowledgeAreaResource extends Resource
 {
     protected static ?string $model = KnowledgeArea::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $modelLabel = 'Área de Conhecimento';
+    protected static ?string $navigationIcon = 'heroicon-o-book-open';
+    protected static ?string $modelLabel = 'Disciplina';
 
     public static function form(Form $form): Form
     {
@@ -28,7 +28,7 @@ class KnowledgeAreaResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->label('Nome')
                     ->required()
-                    ->placeholder('Nome da área de conhecimento'),
+                    ->placeholder('Nome da Disciplina'),
                 Forms\Components\Select::make('is_active')
                     ->label('Ativo')
                     ->options([

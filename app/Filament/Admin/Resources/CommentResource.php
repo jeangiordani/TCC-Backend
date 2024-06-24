@@ -18,7 +18,7 @@ class CommentResource extends Resource
 {
     protected static ?string $model = Comment::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-oval-left-ellipsis';
     protected static ?string $modelLabel = 'Comentário';
     protected static ?string $title = 'Comentários';
 
@@ -47,7 +47,8 @@ class CommentResource extends Resource
                 Tables\Columns\TextColumn::make('text')
                     ->label('Texto')
                     ->searchable()
-                    ->sortable(),
+		    ->sortable()
+		    ->limit(50),
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Usuário')
                     ->searchable()

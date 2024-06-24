@@ -13,7 +13,9 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class UsersRelationManager extends RelationManager
 {
     protected static string $relationship = 'user';
-
+    protected static ?string $modelLabel = 'Usuário';
+    protected static ?string $title = 'Usuário';
+    
     public function form(Form $form): Form
     {
         return $form
@@ -45,6 +47,7 @@ class UsersRelationManager extends RelationManager
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+	    ])
+	    ->heading('Usuário');
     }
 }

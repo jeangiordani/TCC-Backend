@@ -17,9 +17,10 @@ class QuestionResource extends Resource
 {
     protected static ?string $model = Question::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-presentation-chart-line';
 
     protected static ?string $modelLabel = 'Questão';
+    protected static ?string $navigationLabel = 'Questões';
 
     public static function form(Form $form): Form
     {
@@ -41,7 +42,7 @@ class QuestionResource extends Resource
                     ),
                 Forms\Components\Select::make('knowledge_area_id')
                     ->relationship('knowledge_area', 'name')
-                    ->label('Área de conhecimento'),
+                    ->label('Disciplina'),
                 // Forms\Components\Select::make('id')
                 //     ->relationship('alternatives', 'description')
                 //     ->label('Alternativas')
@@ -118,5 +119,11 @@ class QuestionResource extends Resource
             'create' => Pages\CreateQuestion::route('/create'),
             'edit' => Pages\EditQuestion::route('/{record}/edit'),
         ];
+    }
+
+    public static function getPluralLabel(): ?string
+    {
+        return 'Questões';
+
     }
 }

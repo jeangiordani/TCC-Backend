@@ -35,18 +35,19 @@ class MockExamResource extends Resource
                     ->placeholder('Título do simulado'),
                 Forms\Components\TextInput::make('description')
                     ->label('Descrição')
-                    ->required()
                     ->placeholder('Descrição do simulado'),
                 Forms\Components\TextInput::make('qty_questions')
                     ->label('Quantidade')
                     ->placeholder('Quantidade de questões')
-                    ->integer(),
+		    ->integer()
+		    ->required(),
                 Forms\Components\Select::make('user_id')
                     ->relationship('user', 'name')
-                    ->label('Usuário'),
+		    ->label('Usuário')
+		    ->required(),
                 Forms\Components\Select::make('knowledge_area_id')
                     ->relationship('knowledge_area', 'name')
-                    ->label('Área de conhecimento'),
+                    ->label('Disciplina'),
 
             ]);
     }
@@ -62,10 +63,7 @@ class MockExamResource extends Resource
                 Tables\Columns\TextColumn::make('qty_questions')
                     ->label('Quantidade'),
                 Tables\Columns\TextColumn::make('user.name')
-                    ->label('Usuário'),
-                Tables\Columns\TextColumn::make('knowledge_area.name')
-                    ->label('Área de Conhecimento')
-                    ->searchable()
+                    ->label('Usuário')
             ])
             ->filters([
                 //

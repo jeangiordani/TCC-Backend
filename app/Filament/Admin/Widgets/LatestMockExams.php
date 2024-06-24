@@ -9,6 +9,7 @@ use Filament\Tables\Columns\TextColumn;
 
 class LatestMockExams extends BaseWidget
 {
+    protected int | string | array $columnSpan = 'full';
     public function table(Table $table): Table
     {
         return $table
@@ -21,16 +22,17 @@ class LatestMockExams extends BaseWidget
             ->columns([
                 TextColumn::make('title')
                     ->searchable()
-                    ->sortable(),
+		    ->sortable()
+	    	    ->label('Título'),
                 TextColumn::make('qty_questions')
                     ->searchable()
-                    ->sortable(),
-                TextColumn::make('knowledge_area.name')
-                    ->searchable()
-                    ->sortable(),
+		    ->sortable()
+		    ->label('Quantidade'),
                 TextColumn::make('user.name')
                     ->searchable()
-                    ->sortable(),
-            ]);
+		    ->sortable()
+	    	    ->label('Usuário'),
+	    ])
+	    ->heading('Útimos Simulados');
     }
 }
